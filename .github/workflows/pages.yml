@@ -18,7 +18,7 @@ jobs:
       - name: Build the book
         run: mdbook build
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-pages-artifact@v1
         with:
           name: github-pages
           path: ./book
