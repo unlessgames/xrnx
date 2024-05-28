@@ -1,8 +1,5 @@
 name: Build and Deploy mdBook
 
-environment:
-  name: github-pages
-
 on:
   push:
     branches:
