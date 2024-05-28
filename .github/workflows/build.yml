@@ -1,0 +1,28 @@
+name: Build mdBook
+
+on:
+  push:
+    branches: ["next"]
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    env:
+      MDBOOK_VERSION: '0.4.40'
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Install
+      run: |
+        mkdir ~/tools
+        curl -L https://github.com/rust-lang/mdBook/releases/download/v$MDBOOK_VERSION/mdbook-v$MDBOOK_VERSION-x86_64-unknown-linux-gnu.tar.gz | tar xz -C ~/tools
+        echo ~/tools >> $GITHUB_PATH
+    - name: Build
+      run: mdbook build
+    # share between different jobs
+    - uses: actions/upload-artifact@v3
+      with:
+        name: book
+        path: book/

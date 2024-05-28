@@ -1,24 +1,2 @@
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-
-# Tool generated files
-preferences.xml
-Libraries/remdebug/Win32/controller_gui.ini
-
-# IDE generated files
-settings.json
-
-# Binary files 
-Tools/com.renoise.Soundcloud.xrnx/bin/osx/Share on SoundCloud.app/
-Tools/com.renoise.Soundcloud.xrnx/bin/win/Share on SoundCloud.exe
-Tools/com.renoise.xStream.xrnx/favorites.xml
-Tools/com.renoise.xStream.xrnx/userdata/favorites.xml
-
-Tools/com.renoise.AutoMate.xrnx/userdata/library/
+/book/
+/old/
