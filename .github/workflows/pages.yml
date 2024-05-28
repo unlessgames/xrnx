@@ -18,11 +18,10 @@ jobs:
       - name: Build the book
         run: mdbook build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+      - uses: actions/upload-artifact@v4
         with:
+          name: github-pages
           path: ./book
-
   deploy:
     # Add a dependency to the build job
     needs: build
