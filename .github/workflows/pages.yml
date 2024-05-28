@@ -1,49 +1,31 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: GitHub Pages
 
 on:
   push:
-    branches: ["next"]
-  workflow_run:
-    workflows: ["Build mdBook"]
-    types:
-      - completed
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Disallow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+    branches:
+      - next
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      # actions/download-artifact@v3 does not allow sharing across workflows
-      - name: Download artifact
-        id: download-artifact
-        uses: dawidd6/action-download-artifact@v2
+      - uses: actions/checkout@v3
+
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v1
         with:
-          name: book
-          path: book/
-          workflow: build.yml
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+          mdbook-version: '0.4.40'
+          # mdbook-version: 'latest'
+
+      - run: mdbook build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main'
         with:
-          path: book
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./book
