@@ -8,7 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env:
+      MDBOOK-VERSION: "0.4.40"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
