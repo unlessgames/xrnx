@@ -1,4 +1,4 @@
-name: GitHub Pages
+name: Build and Deploy mdBook
 
 on:
   push:
@@ -6,26 +6,36 @@ on:
       - next
 
 jobs:
-  deploy:
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: write
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
+  build:
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Setup mdBook
-        uses: peaceiris/actions-mdbook@v1
+      - name: Set up Rust
+        uses: actions/setup-rust@v1
         with:
-          mdbook-version: '0.4.40'
-          # mdbook-version: 'latest'
+          rust-version: stable
 
-      - run: mdbook build
+      - name: Install mdBook
+        run: cargo install mdbook
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
-        if: github.ref == 'refs/heads/next'
+      - name: Build the book
+        run: mdbook build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./book
+          path: ./book
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
