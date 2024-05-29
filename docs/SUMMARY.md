@@ -8,4 +8,5 @@
   - [Distribution and Community](start/distribution_and_community.md)
 - [Guides](guide/README.md)
   - [Observables and Preferences](guide/observables_and_preferences.md)
+  - [TODO](guide/TODO.md)
 - [Examples](examples/README.md)
