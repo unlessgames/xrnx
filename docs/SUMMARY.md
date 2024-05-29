@@ -1,6 +1,5 @@
 <img src="https://www.renoise.com/sites/default/files/renoise_logo_0.png" alt="Renoise" height="100"/>
 
-[Summary](SUMMARY.md)
 - [Introduction](start/README.md)
   - [Possibilities and Limitations](start/possibilities_and_limitations.md)
   - [Setting up your development enviroment](start/development.md)
