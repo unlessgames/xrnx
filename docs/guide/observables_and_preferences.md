@@ -94,7 +94,6 @@ function randomize_song()
   end
 end
 
-
 -- let's define a function for a custom dialog 
 -- it will contain checkboxes and a slider for our options
 function show_options()
@@ -161,7 +160,15 @@ renoise.tool():add_menu_entry {
 
 ```
 
-When you assign the preferences, Renoise will take care of saving your settings. Your tool will have a `preferences.xml` file created in its folder with the values from your options table. Try restarting Renoise to see that the values you've set in your dialog will persist over different sessions.
+As you can see all we had to do was to assign our observables to the `bind` field on the checkboxes and valuebox, Renoise will take care of updating our settings when the view changes and vice versa.
+
+Of course you could also use observables this way without them being included in your settings, but this is the most common usage pattern for them.
+
+## preferences.xml
+
+When you assign the preferences, Renoise will take care of saving and loading your settings. Your tool will have a `preferences.xml` file created in its folder with the values from your options table. As long as you are using simple types, you don't have to worry about (de)serializing values. 
+
+Try restarting Renoise to see that the values you've set in your dialog will persist over different sessions.
 
 ## Complex Documents
 
