@@ -2,7 +2,7 @@
 
 The Renoise API makes extensive use of [the Observer pattern](https://en.wikipedia.org//wiki/Observer_pattern). In short, different values can be wrapped in Observable objects on which you can register notifier functions that will get called whenever the underlying value changes. This is a great way to react to changes without having to deal with constantly comparing the value to a cached state for example.
 
-When reading the [API](https://github.com/renoise/definitions/), you will find a lot field with `_observable` at the end. Let's see how we can utilize this feature by attaching a notifier so that our tool can do something whenever the user loads a new song.
+When reading the [API](https://github.com/renoise/definitions/), you will find a lot of fields with `_observable` at the end. Let's see how we can utilize this feature by attaching a notifier so that our tool can do something whenever the user loads a new song.
 
 ```lua
 local loaded_new_song = function()
@@ -41,7 +41,11 @@ Tools can have preferences just like Renoise. To use them we first need to creat
 
 Documents in Renoise have all of their fields defined as an Observable type. This comes extra handy when you want to create some settings dialog that needs to be able change the behaviour of your tool and remember its state, while you also want to access these settings across your tool. By using the built-in Document API you get a lot of this functionality for free.
 
-Let's see an example of setting up an `options` object that can be used for the above things. Our goal here is to have three kinds of settings managed by the Document class and a dialog that can be used to change them. The tool will be able to randomize the song by managing tracks, BPM and LPB. We will also define a menu entry for opening our tool settings dialog, you can read more about menu entries in the [Menu Entries](TODO#menu-entries) article, graphical dialogs are further discussed in [Custom views](TODO#views) tutorial.
+Let's see an example of setting up an `options` object that can be used for the above things. 
+
+Our goal here is to have three kinds of settings managed by the Document class and a dialog that can be used to change them. The tool will be able to randomize the song by changing BPM and creating a random number of tracks. 
+
+We will also define a menu entry for opening our tool settings dialog, you can read more about menu entries in the [Menus](TODO.md#menus) guide, graphical dialogs are further discussed in [Views](TODO.md#views).
 
 ```lua
 -- We are creating a new renoise Document by supplying a table of values.
@@ -157,11 +161,11 @@ renoise.tool():add_menu_entry {
 
 ```
 
-When you assign the preferences, Renoise will take care of saving your settings. Your tool will have a `preferences.xml` file created in its folder with the values from your options table. Try restarting Renoise to see that the values you set in your dialog will persist over different sessions.
+When you assign the preferences, Renoise will take care of saving your settings. Your tool will have a `preferences.xml` file created in its folder with the values from your options table. Try restarting Renoise to see that the values you've set in your dialog will persist over different sessions.
 
 ## Complex Documents
 
-For more complex applications (or if you prefer doing things the Object-Oriented way) you can also inherit from renoise.Document.DocumentNode and register properties in the constructor.
+For more complex applications (or if you just prefer doing things the Object-Oriented way) you can also inherit from `renoise.Document.DocumentNode` and register properties in the constructor.
 
 You could change the above Document creation to something like this:
 
