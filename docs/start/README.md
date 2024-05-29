@@ -1,4 +1,4 @@
-# Introduction
+# Getting started
 
 Welcome to the Renoise Tool Scripting Guide! Here, you can learn about what kind of things are possible with scripting in Renoise, how to get started with developing tools, how to debug them and more.
 
