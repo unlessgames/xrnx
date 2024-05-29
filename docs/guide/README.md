@@ -1,6 +1,6 @@
 # Guides to the Renoise API
 
-In this section you can learn about different aspects of the API. These guides will assume you've already read the chapters in [our introduction](introduction.md) and you are able to package and install tools.
+In this section you can learn about different aspects of the API. These guides will assume you've already read the chapters in [our introduction](../start/README.md) and you are able to package and install tools.
 
 <!-- TODO these pages -->
 * [The Song](TODO.md#the-song)
