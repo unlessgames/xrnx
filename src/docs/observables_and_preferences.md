@@ -157,8 +157,6 @@ renoise.tool():add_menu_entry {
 
 ```
 
-One thing you might want to do is have the table that you give to `Document.create` come from a function. This way you can implement a "reset defaults" functionality. Try adding a function that will create a new Document with the defaults and assigns it to your tool preferences, then add a button to the GUI that executes this function.
-
 When you assign the preferences, Renoise will take care of saving your settings. Your tool will have a `preferences.xml` file created in its folder with the values from your options table. Try restarting Renoise to see that the values you set in your dialog will persist over different sessions.
 
 ## Complex Documents
@@ -190,4 +188,4 @@ renoise.tool().preferences = options
 
 This allows you to create more complex documents. Have a look at the complete [Document API](https://github.com/renoise/definitions/blob/main/library/renoise/document.lua) for more info and details about what else you can load/store this way.
 
-> Note: This time we also included type annotations (like `---@class RandomizerToolPreferences`). These can help you with development but they aren't strictly necessary to use. You can read more about how to use them at the [LuaLS website](https://luals.github.io/).
+> Note: This time we also included type annotations (like `---@class RandomizerToolPreferences`). These can help you with development but they aren't strictly necessary. You can read more about how to use them at the [LuaLS website](https://luals.github.io/).
