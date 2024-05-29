@@ -36,11 +36,11 @@ Before you delve into writing your own scripts and tools, it worth considering w
 
 There are a few ways tool creators can make the functionality they provide available for users, below is a brief summary of the most used methods.
 
-* [Define keybindings](TODO#keybindings-example) that can be assigned to shortcuts and executed from certain contexts in Renoise
-* [Add new entries to menus](TODO#menu-entry-example) like the *Tools* menu or one of the right-click context menus
-* [Create custom views](TODO#GUI-example) that do things on button presses, slider drags and so on
-* [Listen to MIDI, OSC or WebSocket messages](TODO#communication-example) to execute actions
-* [React to events inside Renoise](docs/observables_and_preferences.md) like "do something any time a new song is loaded"
+* [Define keybindings](../guide/TODO.md#keybindings-example) that can be assigned to shortcuts and executed from certain contexts in Renoise
+* [Add new entries to menus](../guide/TODO.md#menu-entry-example) like the *Tools* menu or one of the right-click context menus
+* [Create custom views](../guide/TODO.md#GUI-example) that do things on button presses, slider drags and so on
+* [Listen to MIDI, OSC or WebSocket messages](../guide/TODO.md#communication-example) to execute actions
+* [React to events inside Renoise](../guide/observables_and_preferences.md) like "do something any time a new song is loaded"
 
 <!-- 
   TODO more
@@ -58,4 +58,4 @@ Finally, let's look at what is **not** possible via tools.
 * You cannot override the existing behaviour of Renoise. You can add functionality *on top* of what's already there, but you can't disable or change how the built-in features work.  
   For example, you can create a completely custom GUI to compose patterns in a novel way but you cannot change how the built-in pattern editor works or looks like. Similarly, you can add a new shortcut that does something extra to the selected sample block or places new slices but you can't modify how the built-in autoslicing works.
 
-* You cannot write real-time DSP code like synths, effects or modulators (except for scripts inside the [Formula device](TODO#formula-docs)). If you want to design your own synths and effects you should look into plugin development (using [DISTRHO](https://distrho.kx.studio/), [nih-plug](https://github.com/robbert-vdh/nih-plug) etc.), you could also use existing plugins that allow you to build your own DSP patches (like [plugdata](https://plugdata.org/) or [Cardinal](https://cardinal.kx.studio/)). Of course you can [generate and modify samples](TODO#sample-gen-tutorial) using your tool, but it will have to be implemented as offline rendering instead of real-time processing.
+* You cannot write real-time DSP code like synths, effects or modulators (except for scripts inside the [Formula device](../guide/TODO.md#formula-docs)). If you want to design your own synths and effects you should look into plugin development (using [DISTRHO](https://distrho.kx.studio/), [nih-plug](https://github.com/robbert-vdh/nih-plug) etc.), you could also use existing plugins that allow you to build your own DSP patches (like [plugdata](https://plugdata.org/) or [Cardinal](https://cardinal.kx.studio/)). Of course you can [generate and modify samples](../guide/TODO.md#sample-gen-tutorial) using your tool, but it will have to be implemented as offline rendering instead of real-time processing.
