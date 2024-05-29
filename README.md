@@ -8,7 +8,7 @@ You can read the docs at [https://unlessgames.github.io/xrnx](https://unlessgame
 
 ## Development
 
-The docs are generated using [mdBook](https://github.com/rust-lang/mdBook). To preview the pages locally you will need [cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html) to install mdbook and mdbook-linkcheck (which is used to make sure there are no broken links in the book).
+The docs are generated using [mdBook](https://github.com/rust-lang/mdBook). To preview the pages locally you will need [cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html) to install mdbook and mdbook-linkcheck (which is used to make sure there are no broken links in the book). 
 
 ```sh
 cargo install mdbook
