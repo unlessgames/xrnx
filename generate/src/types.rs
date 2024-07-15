@@ -94,7 +94,17 @@ impl LuaKind {
     }
 }
 
+impl Kind {
+    pub fn has_unresolved(&self) -> bool {
+        let s = format!("{}", self);
+        s.contains("\x1b[33m")
+    }
+}
+
 impl Var {
+    pub fn has_unresolved(&self) -> bool {
+        self.kind.has_unresolved()
+    }
     pub fn show(&self) -> String {
         format!(
             "Var {} : {}",
@@ -110,11 +120,27 @@ impl Enum {
     }
 }
 
-// impl Alias {
-//     pub fn show(&self) -> String {
-//         format!("Alias {} {}", self.name, self.kind)
-//     }
-// }
+impl Function {
+    pub fn has_unresolved(&self) -> bool {
+        for p in &self.params {
+            if p.has_unresolved() {
+                return true;
+            }
+        }
+        for r in &self.returns {
+            if r.has_unresolved() {
+                return true;
+            }
+        }
+        false
+    }
+}
+
+impl Alias {
+    pub fn show(&self) -> String {
+        format!("Alias {} {}", self.name, self.kind)
+    }
+}
 
 impl fmt::Display for Kind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -187,6 +213,19 @@ impl fmt::Display for Function {
 }
 
 impl Class {
+    pub fn has_unresolved(&self) -> bool {
+        for v in &self.fields {
+            if v.has_unresolved() {
+                return true;
+            }
+        }
+        for f in &self.methods {
+            if f.has_unresolved() {
+                return true;
+            }
+        }
+        false
+    }
     pub fn is_empty(&self) -> bool {
         self.fields.is_empty() && self.enums.is_empty() && self.methods.is_empty()
     }
@@ -196,25 +235,41 @@ impl Class {
     pub fn get_end(s: &str) -> Option<&str> {
         s.rfind('.').map(|pos| &s[pos + 1..])
     }
+    fn with_new_line(s: &str) -> String {
+        if s.is_empty() {
+            s.to_string()
+        } else {
+            format!("\n{}", s)
+        }
+    }
     pub fn show(&self) -> String {
         format!(
-            "Class {}\n{}\n{}\n{}",
+            "  Class {}{}{}{}",
             self.name,
-            self.enums
-                .iter()
-                .map(|e| format!("  {}", Enum::show(e)))
-                .collect::<Vec<String>>()
-                .join("\n"),
-            self.fields
-                .iter()
-                .map(|v| format!("  {}", Var::show(v)))
-                .collect::<Vec<String>>()
-                .join("\n"),
-            self.methods
-                .iter()
-                .map(|f| format!("  {}", f))
-                .collect::<Vec<String>>()
-                .join("\n")
+            Self::with_new_line(
+                &self
+                    .enums
+                    .iter()
+                    .map(|e| format!("    {}", Enum::show(e)))
+                    .collect::<Vec<String>>()
+                    .join("\n")
+            ),
+            Self::with_new_line(
+                &self
+                    .fields
+                    .iter()
+                    .map(|v| format!("    {}", Var::show(v)))
+                    .collect::<Vec<String>>()
+                    .join("\n")
+            ),
+            Self::with_new_line(
+                &self
+                    .methods
+                    .iter()
+                    .map(|f| format!("    {}", f))
+                    .collect::<Vec<String>>()
+                    .join("\n")
+            )
         )
     }
 }

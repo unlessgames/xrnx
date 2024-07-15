@@ -51,13 +51,11 @@ fn main() -> Result<(), error::Error> {
     replace_inside(
         &format!("{}/SUMMARY.md", out),
         "<!-- API -->",
-        &format!(
-            "{}",
-            docs.iter()
-                .map(|(name, _)| format!("  - [{}](API/{}.md)", name.clone(), name.clone()))
-                .collect::<Vec<String>>()
-                .join("\n")
-        ),
+        &docs
+            .iter()
+            .map(|(name, _)| format!("  - [{}](API/{}.md)", name.clone(), name.clone()))
+            .collect::<Vec<String>>()
+            .join("\n"),
     )?;
     Ok(())
 }

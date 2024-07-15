@@ -217,6 +217,7 @@ impl Class {
         }
 
         if !fields.is_empty() {
+            m.push("\n---".to_string());
             m.push(format!(
                 "{}\n{}\n",
                 h2("Properties"),
@@ -231,6 +232,7 @@ impl Class {
         let mut methods = self.methods.clone();
         methods.sort_by(|a, b| a.name.cmp(&b.name));
         if !methods.is_empty() {
+            m.push("\n---".to_string());
             m.push(format!(
                 "{}\n{}",
                 h2("Functions"),

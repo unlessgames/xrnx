@@ -223,27 +223,40 @@ impl Library {
             }
         }
 
+        // for c in l.classes.values() {
+        //     println!("{}", c.show());
+        // }
+
+        println!("classes:");
         for c in l.classes.values() {
-            println!("{}", c.show());
-        }
-        println!("classes");
-        for k in l.classes.keys() {
-            println!("  {}", k);
-            if !builtin_classes.iter().any(|c| c.name.as_str() == k)
-                && l.classes.get(k).unwrap().is_empty()
-            {
+            let is_empty = !builtin_classes.iter().any(|class| class.name == c.name)
+                && l.classes.get(&c.name).unwrap().is_empty();
+
+            let unresolved = c.has_unresolved();
+
+            if is_empty || unresolved {
+                println!("  {}", c.name);
+            }
+            if unresolved {
+                println!("{}\n", c.show());
+            }
+            if is_empty {
                 println!("  \x1b[33m^--- has no fields, methods or enums\x1b[0m")
             }
         }
-        println!("enums");
-        for k in l.enums.keys() {
-            println!("  {}", k);
-        }
 
-        // println!("aliases");
-        // for a in l.aliases.values() {
-        //     println!("  {}", a.show());
+        // println!("enums");
+        // for e in l.enums.values() {
+        //     println!("  {}", e.name);
         // }
+
+        println!("aliases:");
+        for a in l.aliases.values() {
+            if a.kind.has_unresolved() {
+                println!("  {}", a.name);
+                println!("\n{}\n", a.show());
+            }
+        }
 
         l
     }
