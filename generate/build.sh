@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd generate
+
 echo "downloading lua-language-server-$1..."
 mkdir lua-language-server
 cd lua-language-server
