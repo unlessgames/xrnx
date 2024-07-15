@@ -101,6 +101,14 @@ impl Library {
     fn builtin_classes() -> Vec<Class> {
         vec![
             Self::class_desc(
+                "self",
+                "A type that represents an instance that you call a function on. When you see a function signature starting with this type, you should use `:` to call the function on the instance, this way you can omit this first argument.\n\
+                ```lua
+                local song = renoise.song()
+                local first = song:pattern(0)
+                ```",
+            ),
+            Self::class_desc(
                 "nil",
                 "A built-in type representing a non-existant value, [see details](https://www.lua.org/pil/2.1.html). When you see `?` at the end of types, it means they can be nil.",
             ),
@@ -132,14 +140,6 @@ impl Library {
             Self::class_desc(
                 "unknown",
                 "A dummy type for something that cannot be inferred before run-time.",
-            ),
-            Self::class_desc(
-                "self",
-                "A type that represents an instance that you call a function on. When you see a function signature starting with this type, you should use `:` to call the function on the instance, this way you can omit this first argument.\n\
-                ```lua
-                local song = renoise.song()
-                local first = song:pattern(0)
-                ```",
             ),
         ]
     }

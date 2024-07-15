@@ -246,13 +246,21 @@ impl Class {
 }
 
 impl Library {
-    fn sort_tuples(tuples: &mut [(String, String)]) {
-        tuples.sort_by(
+    // sort the list of docs so that lowercase names come first
+    // and classes starting with "renoise" come before built-in class pages
+    fn sort(docs: &mut [(String, String)]) {
+        docs.sort_by(
             |(a, _), (b, _)| match (a.chars().next(), b.chars().next()) {
                 (Some(ac), Some(bc)) => {
-                    if ac.is_lowercase() && bc.is_lowercase()
-                        || ac.is_uppercase() && bc.is_uppercase()
-                    {
+                    if ac.is_lowercase() && bc.is_lowercase() {
+                        if a.starts_with("renoise") && !b.starts_with("renoise") {
+                            std::cmp::Ordering::Less
+                        } else if b.starts_with("renoise") && !a.starts_with("renoise") {
+                            std::cmp::Ordering::Greater
+                        } else {
+                            a.cmp(b)
+                        }
+                    } else if ac.is_uppercase() && bc.is_uppercase() {
                         a.cmp(b)
                     } else if ac.is_lowercase() && bc.is_uppercase() {
                         std::cmp::Ordering::Less
@@ -264,6 +272,8 @@ impl Library {
             },
         )
     }
+
+    /// render each page inside the library as a list of string tuples (name, content)
     pub fn export_docs(&self) -> Vec<(String, String)> {
         let mut docs: Vec<(String, String)> = self
             .classes
@@ -276,8 +286,7 @@ impl Library {
             .map(|(name, alias)| (name.clone(), alias.render()))
             .collect();
         docs.append(&mut aliases);
-        // let alias_docs: HashMap<String, String> = self.aliases.iter().map(|(name, alias)| )
-        Self::sort_tuples(&mut docs);
+        Self::sort(&mut docs);
         docs
     }
 }

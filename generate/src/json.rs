@@ -24,7 +24,7 @@ impl JsonDoc {
         let tmp_dir = TempDir::new("docs")?;
         let tmp_path = tmp_dir.path();
 
-        let output = Command::new("/home/_a/cdn/lua-language-server/bin/lua-language-server")
+        let output = Command::new("./lua-language-server/bin/lua-language-server")
             .arg("--doc")
             .arg(path)
             .arg("--doc_out_path")
