@@ -10,4 +10,5 @@
   - [Observables and Preferences](guide/observables_and_preferences.md)
   - [TODO](guide/TODO.md)
 - [Examples](examples/README.md)
+- [API](API/README.md)
 <!-- API -->
