@@ -15,4 +15,5 @@ sed -i.bak -e '/if \#view > 200 then/,/end/s/^/-- /' "script/vm/infer.lua"
 
 echo "generating api docs..."
 cd ..
+git restore ../docs/SUMMARY.md
 cargo run -- ../definitions/library ../docs
