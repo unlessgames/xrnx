@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, fmt};
 
+/// enum for possible lua-ls built-in types
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord)]
 #[serde(rename_all = "lowercase")]
 pub enum LuaKind {

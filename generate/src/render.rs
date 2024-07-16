@@ -198,7 +198,7 @@ impl Function {
             if returns.is_empty() {
                 returns
             } else {
-                format!(" -> {}", returns)
+                format!(" `->` {}", returns)
             }
         )
     }
