@@ -204,6 +204,7 @@ impl Class {
                 .filter_map(Function::from_field)
                 .collect(),
             enums: vec![], // enums will get added in Library
+            constants: vec![],
             desc: d.rawdesc.clone().unwrap_or_default(),
         }
     }

@@ -96,6 +96,7 @@ impl Library {
             desc: desc.to_string(),
             fields: vec![],
             methods: vec![],
+            constants: vec![],
             enums: vec![],
         }
     }
@@ -220,11 +221,34 @@ impl Library {
                         methods: vec![f.strip_base()],
                         fields: vec![],
                         enums: vec![],
+                        constants: vec![],
                         // TODO the description should end up here from bit, os etc
                         desc: String::default(),
                     },
                 );
             }
+        }
+
+        for (_, c) in l.classes.iter_mut() {
+            let mut fields = c
+                .fields
+                .clone()
+                .into_iter()
+                .filter(|v| !Var::is_constant(v))
+                .collect::<Vec<Var>>();
+            fields.sort_by(|a, b| a.name.cmp(&b.name));
+
+            let mut constants = c
+                .fields
+                .clone()
+                .into_iter()
+                .filter(Var::is_constant)
+                .collect::<Vec<Var>>();
+
+            constants.sort_by(|a, b| a.name.cmp(&b.name));
+
+            c.fields = fields;
+            c.constants = constants;
         }
 
         // debug print everything that includes some unresolved Kind or is empty

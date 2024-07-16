@@ -82,6 +82,7 @@ pub struct Class {
     pub fields: Vec<Var>,
     pub methods: Vec<Function>,
     pub enums: Vec<Enum>,
+    pub constants: Vec<Var>,
     pub desc: String,
 }
 
@@ -92,6 +93,15 @@ pub enum Def {
     Enum(Enum),
     Alias(Alias),
     Function(Function),
+}
+
+impl Var {
+    pub fn is_constant(&self) -> bool {
+        self.name
+            .clone()
+            .map(|name| name == name.to_uppercase())
+            .unwrap_or(false)
+    }
 }
 
 impl Function {

@@ -243,12 +243,9 @@ impl Class {
             m.push(self.desc.clone())
         }
 
-        let mut fields = self.fields.clone();
-        fields.sort_by(|a, b| a.name.cmp(&b.name));
-
-        if !self.enums.is_empty() {
+        if !self.enums.is_empty() || !self.constants.is_empty() {
             m.push(format!(
-                "{}\n{}\n",
+                "{}\n{}\n{}",
                 h2("Constants"),
                 self.enums
                     .iter()
@@ -258,16 +255,21 @@ impl Class {
                         format!("{}\n{}", hash(&h3(end), end), e.desc)
                     })
                     .collect::<Vec<String>>()
+                    .join("\n"),
+                self.constants
+                    .iter()
+                    .map(Var::long)
+                    .collect::<Vec<String>>()
                     .join("\n")
             ))
         }
 
-        if !fields.is_empty() {
+        if !self.fields.is_empty() {
             m.push("\n---".to_string());
             m.push(format!(
                 "{}\n{}\n",
                 h2("Properties"),
-                fields
+                self.fields
                     .iter()
                     .map(Var::long)
                     .collect::<Vec<String>>()
