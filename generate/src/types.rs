@@ -94,6 +94,28 @@ pub enum Def {
     Function(Function),
 }
 
+impl Function {
+    pub fn strip_base(&self) -> Self {
+        if let Some(name) = self.name.clone() {
+            Self {
+                name: Class::get_end(&name).map(|n| n.to_string()),
+                ..self.clone()
+            }
+        } else {
+            self.clone()
+        }
+    }
+}
+
+impl Class {
+    pub fn get_base(s: &str) -> Option<&str> {
+        s.rfind('.').map(|pos| &s[..pos])
+    }
+    pub fn get_end(s: &str) -> Option<&str> {
+        s.rfind('.').map(|pos| &s[pos + 1..])
+    }
+}
+
 // ---------------------------------------- debug helpers to show types
 
 impl LuaKind {
@@ -238,12 +260,7 @@ impl Class {
     pub fn is_empty(&self) -> bool {
         self.fields.is_empty() && self.enums.is_empty() && self.methods.is_empty()
     }
-    pub fn get_base(s: &str) -> Option<&str> {
-        s.rfind('.').map(|pos| &s[..pos])
-    }
-    pub fn get_end(s: &str) -> Option<&str> {
-        s.rfind('.').map(|pos| &s[pos + 1..])
-    }
+
     fn with_new_line(s: &str) -> String {
         if s.is_empty() {
             s.to_string()

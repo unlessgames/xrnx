@@ -212,14 +212,14 @@ impl Library {
                 if class.methods.iter().any(|fun| fun.name == f.name) {
                     // skip class function as it was already added by Def::from_definition to its class
                 } else {
-                    class.methods.push(f.clone())
+                    class.methods.push(f.strip_base())
                 }
             } else {
                 l.classes.insert(
                     base.to_string(),
                     Class {
                         name: base.to_string(),
-                        methods: vec![f.clone()],
+                        methods: vec![f.strip_base()],
                         fields: vec![],
                         enums: vec![],
                         // TODO the description should end up here from bit, os etc
