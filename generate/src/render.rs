@@ -18,6 +18,7 @@ impl Library {
         Self::sort(&mut docs);
         docs
     }
+
     // sort the list of docs so that lowercase names come first
     // and classes starting with "renoise" come before built-in class pages
     fn sort(docs: &mut [(String, String)]) {
