@@ -54,6 +54,7 @@ impl JsonDoc {
                     .any(|define| Self::file_matches(&define.file, path))
             })
             .map(|d| {
+                // remove standard define from the list of defines (for type())
                 let mut def = d.clone();
                 def.defines
                     .retain(|define| Self::file_matches(&define.file, path));

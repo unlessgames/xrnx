@@ -19,13 +19,7 @@ pub enum LuaKind {
     LightUserData,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct Alias {
-    pub name: String,
-    pub kind: Kind,
-    // values: Vec<String>,
-}
-
+/// enum for complex custom types
 #[derive(Debug, Clone, PartialEq)]
 pub enum Kind {
     Unresolved(String),
@@ -44,6 +38,15 @@ pub enum Kind {
     Literal(Box<LuaKind>, String),
 }
 
+/// a definition alias, rendered as a doc page
+#[derive(Debug, Clone, PartialEq)]
+pub struct Alias {
+    pub name: String,
+    pub kind: Kind,
+    pub desc: Option<String>,
+}
+
+/// variable definition used in fields and params and returns of functions
 #[derive(Debug, Clone, PartialEq)]
 pub struct Var {
     pub name: Option<String>,
@@ -53,6 +56,7 @@ pub struct Var {
     // pub range: String
 }
 
+/// function definition for methods, functions and lambdas
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct Function {
     pub name: Option<String>,
@@ -62,6 +66,15 @@ pub struct Function {
     // pub overloads: ?
 }
 
+/// enumeration attached to classes
+/// self.desc contains a code block string with the values
+#[derive(Debug, Clone, PartialEq)]
+pub struct Enum {
+    pub name: String,
+    pub desc: String,
+}
+
+/// class definition, rendered as a doc page
 #[derive(Debug, Clone, PartialEq)]
 pub struct Class {
     pub name: String,
@@ -71,12 +84,7 @@ pub struct Class {
     pub desc: String,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct Enum {
-    pub name: String,
-    pub desc: String,
-}
-
+/// a wrapper for all top-level types coming from the json
 #[derive(Debug, Clone, PartialEq)]
 pub enum Def {
     Class(Class),
@@ -84,6 +92,8 @@ pub enum Def {
     Alias(Alias),
     Function(Function),
 }
+
+// ---------------------------------------- debug helpers to show types
 
 impl LuaKind {
     pub fn show(&self) -> String {

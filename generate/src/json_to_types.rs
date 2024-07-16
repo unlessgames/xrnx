@@ -85,7 +85,7 @@ impl Var {
 }
 
 impl Function {
-    pub fn from_extend(extend: Extend, name: String, desc: String) -> Option<Self> {
+    fn from_extend(extend: Extend, name: String, desc: String) -> Option<Self> {
         match extend.lua_type {
             Type::Lua(LuaKind::Function) => {
                 let params = extend
@@ -110,7 +110,7 @@ impl Function {
             _ => None,
         }
     }
-    pub fn from_field(field: Field) -> Option<Self> {
+    fn from_field(field: Field) -> Option<Self> {
         if let Some(extend) = field.extends {
             Self::from_extend(
                 extend,
@@ -131,7 +131,7 @@ impl Class {
             false
         }
     }
-    pub fn from_definition(d: &Definition) -> Self {
+    fn from_definition(d: &Definition) -> Self {
         Self {
             name: d.name.clone(),
             fields: d
@@ -177,6 +177,7 @@ impl Def {
                 })),
 
                 Type::Doc(Doc::Alias) => Some(Self::Alias(Alias {
+                    desc: d.rawdesc.clone(),
                     name: d.name.clone(),
                     kind: first
                         .clone()

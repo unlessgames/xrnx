@@ -1,6 +1,7 @@
 use crate::error::Error;
 use std::{fs, path::PathBuf};
 
+/// helper to crawl directories and collect lua files
 #[derive(Debug, Clone)]
 pub enum Source {
     File(PathBuf),

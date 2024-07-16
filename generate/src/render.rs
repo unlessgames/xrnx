@@ -159,10 +159,10 @@ impl Var {
 impl Alias {
     fn render(&self) -> String {
         format!(
-            "{}\n{}",
+            "{}\n{}\n{}",
             hash(&h1(&format!("alias {}", &self.name)), &self.name),
             self.kind.link(),
-            // self
+            self.desc.clone().unwrap_or_default()
         )
     }
 }
