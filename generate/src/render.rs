@@ -160,7 +160,7 @@ impl Var {
 impl Alias {
     fn render(&self) -> String {
         format!(
-            "{}\n{}\n{}",
+            "{}\n{}  \n{}",
             hash(&h1(&format!("alias {}", &self.name)), &self.name),
             self.kind.link(),
             self.desc.clone().unwrap_or_default()
@@ -289,6 +289,7 @@ impl Class {
                     .join("\n")
             ))
         }
-        m.join("\n")
+        m.push("\n".to_string());
+        m.join("  \n")
     }
 }

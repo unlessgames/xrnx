@@ -102,14 +102,12 @@ impl Library {
 
     // a list of classes that correspond to lua types
     fn builtin_classes() -> Vec<Class> {
+        let self_example =
+            "```lua\nlocal song = renoise.song()\nlocal first = song:pattern(0)\n```";
         vec![
             Self::class_desc(
                 "self",
-                "A type that represents an instance that you call a function on. When you see a function signature starting with this type, you should use `:` to call the function on the instance, this way you can omit this first argument.\n\
-                ```lua
-                local song = renoise.song()
-                local first = song:pattern(0)
-                ```",
+                &format!("A type that represents an instance that you call a function on. When you see a function signature starting with this type, you should use `:` to call the function on the instance, this way you can omit this first argument.\n{}", self_example),
             ),
             Self::class_desc(
                 "nil",
