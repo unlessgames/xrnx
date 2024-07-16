@@ -4,6 +4,51 @@ use crate::{
     types::*,
 };
 
+impl Def {
+    pub fn from_definition(d: &Definition) -> Option<Self> {
+        if let Some(first) = d.defines.first() {
+            match first.lua_type {
+                Type::Doc(Doc::Class) => Some(Self::Class(Class::from_definition(d))),
+
+                // TODO parse fields in enum either from desc or from Type::TableField
+                Type::Doc(Doc::Enum) => Some(Self::Enum(Enum {
+                    name: d.name.clone(),
+                    desc: d.rawdesc.clone().unwrap_or_default(),
+                })),
+
+                Type::Doc(Doc::Alias) => Some(Self::Alias(Alias {
+                    desc: d.rawdesc.clone(),
+                    name: d.name.clone(),
+                    kind: first
+                        .clone()
+                        .extends
+                        .map(|e| Kind::from_string(&e.view))
+                        .unwrap_or(Kind::Alias(d.name.clone())),
+                })),
+
+                Type::SetField | Type::SetGlobal => {
+                    if let Some(extend) = first.extends.clone() {
+                        match extend.lua_type {
+                            Type::Lua(LuaKind::Function) => Function::from_extend(
+                                extend,
+                                d.name.clone(),
+                                d.rawdesc.clone().unwrap_or_default(),
+                            )
+                            .map(Self::Function),
+                            _ => None,
+                        }
+                    } else {
+                        None
+                    }
+                }
+                _ => None,
+            }
+        } else {
+            None
+        }
+    }
+}
+
 impl Kind {
     fn from_string(s: &str) -> Self {
         LuaParser::type_def(s)
@@ -39,7 +84,7 @@ impl From<Extend> for Kind {
                 Self::from_string(&e.view)
             }
         } else {
-            Self::from(e.lua_type) // TODO
+            Self::from(e.lua_type)
         }
     }
 }
@@ -160,51 +205,6 @@ impl Class {
                 .collect(),
             enums: vec![], // enums will get added in Library
             desc: d.rawdesc.clone().unwrap_or_default(),
-        }
-    }
-}
-
-impl Def {
-    pub fn from_definition(d: &Definition) -> Option<Self> {
-        if let Some(first) = d.defines.first() {
-            match first.lua_type {
-                Type::Doc(Doc::Class) => Some(Self::Class(Class::from_definition(d))),
-
-                // TODO parse fields in enum either from desc or from Type::TableField
-                Type::Doc(Doc::Enum) => Some(Self::Enum(Enum {
-                    name: d.name.clone(),
-                    desc: d.rawdesc.clone().unwrap_or_default(),
-                })),
-
-                Type::Doc(Doc::Alias) => Some(Self::Alias(Alias {
-                    desc: d.rawdesc.clone(),
-                    name: d.name.clone(),
-                    kind: first
-                        .clone()
-                        .extends
-                        .map(|e| Kind::from_string(&e.view))
-                        .unwrap_or(Kind::Alias(d.name.clone())),
-                })),
-
-                Type::SetField | Type::SetGlobal => {
-                    if let Some(extend) = first.extends.clone() {
-                        match extend.lua_type {
-                            Type::Lua(LuaKind::Function) => Function::from_extend(
-                                extend,
-                                d.name.clone(),
-                                d.rawdesc.clone().unwrap_or_default(),
-                            )
-                            .map(Self::Function),
-                            _ => None,
-                        }
-                    } else {
-                        None
-                    }
-                }
-                _ => None,
-            }
-        } else {
-            None
         }
     }
 }

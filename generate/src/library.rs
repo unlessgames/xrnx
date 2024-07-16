@@ -222,7 +222,7 @@ impl Library {
                         methods: vec![f.clone()],
                         fields: vec![],
                         enums: vec![],
-                        // TODO the description should somehow end up here from bit, os etc
+                        // TODO the description should end up here from bit, os etc
                         desc: String::default(),
                     },
                 );

@@ -49,7 +49,7 @@ args = ${ "(" ~ (vararg | (_arg ~ W ~ ("," ~ W ~ (_arg | vararg))*))? ~ ")"}
 // "fun(x: integer, ...integer): integer, string"
 fun = {"fun" ~  args ~ ( ":" ~ returns )?}
 
-// parse LUALS views for functions and methods ------------
+// parse LUALS views for functions and methods
 // if this was a pure lua-doc parser these wouldn't be here
 
 // "function bit.bnot(x: integer, ...integer)\n  -> integer"

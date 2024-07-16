@@ -99,7 +99,7 @@ impl Kind {
                 LuaKind::Integer | LuaKind::Number => format!("`{}`", s.clone()),
                 _ => s.clone(),
             },
-            Kind::Class(name) => link(name, name), // TODO convert url path
+            Kind::Class(name) => link(name, name),
             Kind::Enum(kinds) => kinds
                 .iter()
                 .map(|k| k.link())
@@ -113,7 +113,7 @@ impl Kind {
             Kind::SelfArg => "[*self*](self.md)".to_string(),
             Kind::Array(k) => format!("{}`[]`", k.as_ref().link()),
             Kind::Nullable(k) => format!("{}{}", k.as_ref().link(), link("?", "nil")),
-            Kind::Alias(name) => link(name, name), // TODO convert url path
+            Kind::Alias(name) => link(name, name),
             Kind::Function(f) => f.short(),
             Kind::Table(k, v) => format!("table<{}, {}>", k.as_ref().link(), v.as_ref().link()),
             Kind::Object(hm) => {

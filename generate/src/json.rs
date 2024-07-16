@@ -269,7 +269,6 @@ pub struct Extend {
     pub args: Option<Vec<ArgDef>>,
     /// Only present for functions (type = "function") with returns
     pub returns: Option<Vec<ReturnDef>>,
-    // pub types: TODO
 }
 
 /// Extends can be either null, an object or an array of objects
