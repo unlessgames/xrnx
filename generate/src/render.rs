@@ -172,8 +172,8 @@ impl Function {
     fn long(&self) -> String {
         let name = self.name.clone().unwrap_or("fun".to_string());
         if self.params.is_empty() {
-            let name = h3(&format!("`{}()`", &name));
-            hash(&self.with_desc(&self.with_returns(&name)), &name)
+            let name = hash(&h3(&format!("`{}()`", &name)), &name);
+            self.with_desc(&self.with_returns(&name))
         } else {
             let params = self
                 .params
