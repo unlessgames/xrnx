@@ -16,8 +16,8 @@ impl LuaParser {
                 Self::kind(pair)
             }
             Err(err) => {
-                // print parse errors red
-                println!("\x1b[31m{}\x1b[0m", err);
+                // warn about parse errors
+                println!("\x1b[33m{}\x1b[0m", err);
                 Kind::Unresolved(input.to_string())
             }
         }
