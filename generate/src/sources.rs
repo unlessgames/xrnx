@@ -1,6 +1,5 @@
-use std::{fs, path::PathBuf};
-
 use crate::error::Error;
+use std::{fs, path::PathBuf};
 
 #[derive(Debug, Clone)]
 pub enum Source {
@@ -9,25 +8,6 @@ pub enum Source {
 }
 
 impl Source {
-    // pub fn path(&self) -> &Path {
-    //     match self {
-    //         Self::File(path) => path,
-    //         Self::Folder(path, _) => path,
-    //     }
-    // }
-
-    // pub fn stem(&self) -> Result<String, Error> {
-    //     self.path()
-    //         .file_stem()
-    //         .ok_or_else(|| Error::InvalidFile)
-    //         .and_then(|os_str| {
-    //             os_str
-    //                 .to_str()
-    //                 .ok_or_else(|| Error::InvalidFile)
-    //                 .map(|s| s.to_string())
-    //         })
-    // }
-
     /// recursively crawl a path to build a source tree with folders and files
     pub fn from_path(path: PathBuf) -> Result<Option<Source>, Error> {
         if path.is_dir() {

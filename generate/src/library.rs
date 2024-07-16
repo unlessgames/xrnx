@@ -3,13 +3,13 @@ use std::{collections::HashMap, path::PathBuf};
 
 #[derive(Clone)]
 pub struct Library {
-    // pub defs: Vec<Def>,
     pub classes: HashMap<String, Class>,
     pub enums: HashMap<String, Enum>,
     pub aliases: HashMap<String, Alias>,
 }
 
 impl Library {
+    /// generate a library from a given root directory or lua file
     pub fn from_path(path: PathBuf) -> Result<Self, Error> {
         let mut defs: Vec<Def> = vec![];
         let sources = Source::from_path(path)?;
@@ -40,6 +40,7 @@ impl Library {
         }
     }
 
+    // cross-reference parsed Kinds as existing classes, enums and aliases
     fn resolve_kind(&self, kind: &Kind) -> Kind {
         match kind.clone() {
             Kind::Unresolved(s) => self.resolve_string(s).unwrap_or(kind.clone()),
@@ -88,6 +89,7 @@ impl Library {
         }
     }
 
+    // helper to create built-in dummy classes
     fn class_desc(name: &str, desc: &str) -> Class {
         Class {
             name: name.to_string(),
@@ -98,6 +100,7 @@ impl Library {
         }
     }
 
+    // a list of classes that correspond to lua types
     fn builtin_classes() -> Vec<Class> {
         vec![
             Self::class_desc(
@@ -144,7 +147,9 @@ impl Library {
         ]
     }
 
+    // generate Library from a list of Defs
     fn from_defs(defs: Vec<Def>) -> Self {
+        // sort defs into hasmaps of classes, enums and aliases
         let mut classes = HashMap::new();
         let mut enums = HashMap::new();
         let mut aliases = HashMap::new();
@@ -171,8 +176,8 @@ impl Library {
             aliases,
         };
 
-        // transform Kind::Unresolved(xy) to the approriate classes and aliases
-        // by cross referencing the hash maps on the library
+        // transform any unresolved Kind to the appropriate classe or alias
+        // by cross referencing the hashmaps of the library
         l.resolve_classes();
         let mut aliases = l.aliases.clone();
         aliases
@@ -183,7 +188,7 @@ impl Library {
             .iter_mut()
             .for_each(|f| l.resolve_function(f));
 
-        // add enums to their respective classes
+        // assign enums to their respective classes
         for (k, e) in l.enums.iter() {
             let base = Class::get_base(k);
             if let Some(base) = base {
@@ -193,6 +198,7 @@ impl Library {
             }
         }
 
+        // generate dummy classes for lua types
         let builtin_classes = Self::builtin_classes();
         builtin_classes.iter().for_each(|c| {
             l.classes.insert(c.name.clone(), c.clone());
@@ -223,10 +229,7 @@ impl Library {
             }
         }
 
-        // for c in l.classes.values() {
-        //     println!("{}", c.show());
-        // }
-
+        // debug print everything that includes some unresolved Kind or is empty
         println!("classes:");
         for c in l.classes.values() {
             let is_empty = !builtin_classes.iter().any(|class| class.name == c.name)
@@ -244,12 +247,6 @@ impl Library {
                 println!("  \x1b[33m^--- has no fields, methods or enums\x1b[0m")
             }
         }
-
-        // println!("enums");
-        // for e in l.enums.values() {
-        //     println!("  {}", e.name);
-        // }
-
         println!("aliases:");
         for a in l.aliases.values() {
             if a.kind.has_unresolved() {
@@ -257,6 +254,10 @@ impl Library {
                 println!("\n{}\n", a.show());
             }
         }
+        // println!("enums");
+        // for e in l.enums.values() {
+        //     println!("  {}", e.name);
+        // }
 
         l
     }

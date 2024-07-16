@@ -1,17 +1,32 @@
-use std::collections::HashMap;
-
+use crate::types::{Function, Kind, LuaKind, Var};
 use pest::{iterators::Pair, Parser};
 use pest_derive::Parser;
-
-use crate::types::{Function, Kind, LuaKind, Var};
+use std::collections::HashMap;
 
 #[derive(Parser)]
 #[grammar = "./lua_parser.pest"]
 pub struct LuaParser {}
 impl LuaParser {
+    /// parse a string into a type definition of Kind
+    pub fn type_def(input: &str) -> Kind {
+        match Self::parse(Rule::type_def, input) {
+            Ok(mut pairs) => {
+                let next = pairs.next().unwrap();
+                let pair = next.into_inner().next().unwrap();
+                Self::kind(pair)
+            }
+            Err(err) => {
+                // print parse errors red
+                println!("\x1b[31m{}\x1b[0m", err);
+                Kind::Unresolved(input.to_string())
+            }
+        }
+    }
+
     fn as_string(pair: &Pair<Rule>) -> String {
         pair.as_span().as_str().to_string()
     }
+
     fn named_var(pair: Pair<Rule>) -> Var {
         let mut inner = pair.into_inner();
         let name = Some(Self::as_string(&inner.next().unwrap()));
@@ -29,6 +44,7 @@ impl LuaParser {
             },
         }
     }
+
     fn returns(pair: Option<Pair<Rule>>) -> Vec<Var> {
         let mut returns: Vec<Var> = vec![];
         if let Some(pair) = pair {
@@ -46,6 +62,7 @@ impl LuaParser {
         }
         returns
     }
+
     fn args(pair: Pair<Rule>) -> Vec<Var> {
         let mut params: Vec<Var> = vec![];
         for arg in pair.into_inner() {
@@ -71,6 +88,7 @@ impl LuaParser {
         }
         params
     }
+
     fn kind(pair: Pair<Rule>) -> Kind {
         let s = Self::as_string(&pair);
         match pair.as_rule() {
@@ -160,20 +178,6 @@ impl LuaParser {
             _ => {
                 println!("{:?}", pair.as_rule());
                 unreachable!()
-            }
-        }
-    }
-
-    pub fn type_def(input: &str) -> Kind {
-        match Self::parse(Rule::type_def, input) {
-            Ok(mut pairs) => {
-                let next = pairs.next().unwrap();
-                let pair = next.into_inner().next().unwrap();
-                Self::kind(pair)
-            }
-            Err(err) => {
-                println!("\x1b[31m{}\x1b[0m", err);
-                Kind::Unresolved(input.to_string())
             }
         }
     }

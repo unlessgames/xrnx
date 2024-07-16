@@ -1,6 +1,51 @@
 use crate::library::Library;
 use crate::types::*;
 
+impl Library {
+    /// render each page inside the library as a list of string tuples (name, content)
+    pub fn export_docs(&self) -> Vec<(String, String)> {
+        let mut docs: Vec<(String, String)> = self
+            .classes
+            .iter()
+            .map(|(name, class)| (name.clone(), class.render()))
+            .collect();
+        let mut aliases: Vec<(String, String)> = self
+            .aliases
+            .iter()
+            .map(|(name, alias)| (name.clone(), alias.render()))
+            .collect();
+        docs.append(&mut aliases);
+        Self::sort(&mut docs);
+        docs
+    }
+    // sort the list of docs so that lowercase names come first
+    // and classes starting with "renoise" come before built-in class pages
+    fn sort(docs: &mut [(String, String)]) {
+        docs.sort_by(
+            |(a, _), (b, _)| match (a.chars().next(), b.chars().next()) {
+                (Some(ac), Some(bc)) => {
+                    if ac.is_lowercase() && bc.is_lowercase() {
+                        if a.starts_with("renoise") && !b.starts_with("renoise") {
+                            std::cmp::Ordering::Less
+                        } else if b.starts_with("renoise") && !a.starts_with("renoise") {
+                            std::cmp::Ordering::Greater
+                        } else {
+                            a.cmp(b)
+                        }
+                    } else if ac.is_uppercase() && bc.is_uppercase() {
+                        a.cmp(b)
+                    } else if ac.is_lowercase() && bc.is_uppercase() {
+                        std::cmp::Ordering::Less
+                    } else {
+                        std::cmp::Ordering::Greater
+                    }
+                }
+                _ => a.cmp(b),
+            },
+        )
+    }
+}
+
 fn heading(text: &str, level: usize) -> String {
     format!("{} {}", "#".repeat(level), text)
 }
@@ -39,14 +84,14 @@ fn hash(text: &str, hash: &str) -> String {
 }
 
 impl LuaKind {
-    pub fn link(&self) -> String {
+    fn link(&self) -> String {
         let text = self.show();
         link(&text, &text)
     }
 }
 
 impl Kind {
-    pub fn link(&self) -> String {
+    fn link(&self) -> String {
         match self {
             Kind::Lua(lk) => lk.link(),
             Kind::Literal(k, s) => match k.as_ref() {
@@ -88,7 +133,7 @@ impl Kind {
 }
 
 impl Var {
-    pub fn short(&self) -> String {
+    fn short(&self) -> String {
         if matches!(self.kind, Kind::SelfArg) {
             self.kind.link()
         } else if let Some(name) = self.name.clone() {
@@ -97,7 +142,7 @@ impl Var {
             self.kind.link()
         }
     }
-    pub fn long(&self) -> String {
+    fn long(&self) -> String {
         let desc = self.desc.clone().unwrap_or_default();
         format!(
             "{}{}",
@@ -112,7 +157,7 @@ impl Var {
 }
 
 impl Alias {
-    pub fn render(&self) -> String {
+    fn render(&self) -> String {
         format!(
             "{}\n{}",
             hash(&h1(&format!("alias {}", &self.name)), &self.name),
@@ -123,16 +168,25 @@ impl Alias {
 }
 
 impl Function {
-    fn render_vars(vars: &[Var]) -> String {
-        vars.iter()
-            .map(Var::short)
-            .collect::<Vec<String>>()
-            .join(", ")
+    fn long(&self) -> String {
+        let name = self.name.clone().unwrap_or("fun".to_string());
+        if self.params.is_empty() {
+            let name = h3(&format!("`{}()`", &name));
+            hash(&self.with_desc(&self.with_returns(&name)), &name)
+        } else {
+            let params = self
+                .params
+                .iter()
+                .map(Var::short)
+                .collect::<Vec<String>>()
+                .join(", ");
+
+            self.with_desc(
+                &self.with_returns(&hash(&format!("### `{}`({})", &name, params), &name)),
+            )
+        }
     }
-    pub fn empty(&self) -> String {
-        format!("{}()", &self.name.clone().unwrap_or("fun".to_string()))
-    }
-    pub fn short(&self) -> String {
+    fn short(&self) -> String {
         if self.params.is_empty() && self.returns.is_empty() {
             return self.empty();
         }
@@ -147,6 +201,15 @@ impl Function {
                 format!(" -> {}", returns)
             }
         )
+    }
+    fn empty(&self) -> String {
+        format!("{}()", &self.name.clone().unwrap_or("fun".to_string()))
+    }
+    fn render_vars(vars: &[Var]) -> String {
+        vars.iter()
+            .map(Var::short)
+            .collect::<Vec<String>>()
+            .join(", ")
     }
     fn with_desc(&self, head: &str) -> String {
         let desc = self.desc.clone().unwrap_or_default();
@@ -169,28 +232,10 @@ impl Function {
             format!("{}\n`->`{}  \n", head, returns)
         }
     }
-    pub fn long(&self) -> String {
-        let name = self.name.clone().unwrap_or("fun".to_string());
-        if self.params.is_empty() {
-            let name = h3(&format!("`{}()`", &name));
-            hash(&self.with_desc(&self.with_returns(&name)), &name)
-        } else {
-            let params = self
-                .params
-                .iter()
-                .map(Var::short)
-                .collect::<Vec<String>>()
-                .join(", ");
-
-            self.with_desc(
-                &self.with_returns(&hash(&format!("### `{}`({})", &name, params), &name)),
-            )
-        }
-    }
 }
 
 impl Class {
-    pub fn render(&self) -> String {
+    fn render(&self) -> String {
         let mut m = vec![h1(&self.name)];
 
         if !self.desc.is_empty() {
@@ -244,51 +289,5 @@ impl Class {
             ))
         }
         m.join("\n")
-    }
-}
-
-impl Library {
-    // sort the list of docs so that lowercase names come first
-    // and classes starting with "renoise" come before built-in class pages
-    fn sort(docs: &mut [(String, String)]) {
-        docs.sort_by(
-            |(a, _), (b, _)| match (a.chars().next(), b.chars().next()) {
-                (Some(ac), Some(bc)) => {
-                    if ac.is_lowercase() && bc.is_lowercase() {
-                        if a.starts_with("renoise") && !b.starts_with("renoise") {
-                            std::cmp::Ordering::Less
-                        } else if b.starts_with("renoise") && !a.starts_with("renoise") {
-                            std::cmp::Ordering::Greater
-                        } else {
-                            a.cmp(b)
-                        }
-                    } else if ac.is_uppercase() && bc.is_uppercase() {
-                        a.cmp(b)
-                    } else if ac.is_lowercase() && bc.is_uppercase() {
-                        std::cmp::Ordering::Less
-                    } else {
-                        std::cmp::Ordering::Greater
-                    }
-                }
-                _ => a.cmp(b),
-            },
-        )
-    }
-
-    /// render each page inside the library as a list of string tuples (name, content)
-    pub fn export_docs(&self) -> Vec<(String, String)> {
-        let mut docs: Vec<(String, String)> = self
-            .classes
-            .iter()
-            .map(|(name, class)| (name.clone(), class.render()))
-            .collect();
-        let mut aliases: Vec<(String, String)> = self
-            .aliases
-            .iter()
-            .map(|(name, alias)| (name.clone(), alias.render()))
-            .collect();
-        docs.append(&mut aliases);
-        Self::sort(&mut docs);
-        docs
     }
 }

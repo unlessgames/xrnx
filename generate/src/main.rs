@@ -1,8 +1,9 @@
 use clap::Parser as ClapParser;
-use std::fs::*;
-use std::io::Read;
-use std::io::Write;
-use std::path::PathBuf;
+use std::{
+    fs::*,
+    io::{Read, Write},
+    path::PathBuf,
+};
 
 mod error;
 mod json;
@@ -23,18 +24,12 @@ struct Args {
     output: PathBuf,
 }
 fn replace_inside(file_path: &str, from: &str, to: &str) -> Result<(), error::Error> {
-    // Read the file content into a string
     let mut file = File::open(file_path)?;
     let mut content = String::new();
     file.read_to_string(&mut content)?;
 
-    // Replace the from string with the to string
-    let new_content = content.replace(from, to);
-
-    // Write the modified content back to the file
     let mut file = File::create(file_path)?;
-    file.write_all(new_content.as_bytes())?;
-
+    file.write_all(content.replace(from, to).as_bytes())?;
     Ok(())
 }
 fn main() -> Result<(), error::Error> {

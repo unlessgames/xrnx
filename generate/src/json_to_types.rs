@@ -1,8 +1,8 @@
-use crate::json::{ArgDef, ArgType, Definition, Doc, Extend, Field, ReturnDef, Type};
-// pub struct Constant
-use crate::types::*;
-
-use crate::lua_parser::LuaParser;
+use crate::{
+    json::{ArgDef, ArgType, Definition, Doc, Extend, Field, ReturnDef, Type},
+    lua_parser::LuaParser,
+    types::*,
+};
 
 impl Kind {
     fn from_string(s: &str) -> Self {

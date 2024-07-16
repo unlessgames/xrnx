@@ -1,9 +1,5 @@
+use crate::{error::Error, types::LuaKind};
 use serde::{Deserialize, Deserializer, Serialize};
-
-use crate::error::Error;
-
-use crate::types::LuaKind;
-
 use std::{
     fmt, fs,
     path::{Path, PathBuf},
@@ -323,74 +319,14 @@ pub struct ArgDef {
 #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct ReturnDef {
     pub name: Option<String>,
+    pub view: String,
     // the type for returns will always be "function.return" so we can skip parsing it
     // #[serde(rename = "type")]
     // pub lua_type: LuaType,
-    pub view: String,
 }
 
 /*
 TODO
-
-UNHANDLED EXTENDS doc.type -> "types"
-{
-    "defines": [
-      {
-        "extends": {
-          "finish": 9410055,
-          "start": 9410025,
-          "type": "doc.type",
-          "types": [
-            {
-              "fields": [
-                {
-                  "finish": 9410039,
-                  "name": {
-                    "[1]": "x",
-                    "finish": 9410028,
-                    "start": 9410027,
-                    "type": "doc.field.name",
-                    "view": "x"
-                  },
-                  "start": 9410027,
-                  "type": "doc.type.field",
-                  "view": "number"
-                },
-                {
-                  "finish": 9410053,
-                  "name": {
-                    "[1]": "y",
-                    "finish": 9410042,
-                    "start": 9410041,
-                    "type": "doc.field.name",
-                    "view": "y"
-                  },
-                  "start": 9410041,
-                  "type": "doc.type.field",
-                  "view": "number"
-                }
-              ],
-              "finish": 9410055,
-              "start": 9410025,
-              "type": "doc.type.table",
-              "view": "{ x: number, y: number }"
-            }
-          ],
-          "view": "{ x: number, y: number }"
-        },
-        "file": "file://library/renoise/view_builder.lua",
-        "finish": 9410055,
-        "start": 9410010,
-        "type": "doc.alias"
-      }
-    ],
-    "desc": "A table of allowed maximum values for each axis\n* Default: {x: 1.0, y: 1.0}",
-    "fields": [],
-    "name": "XYPadMaxValues",
-    "rawdesc": "A table of allowed maximum values for each axis\n* Default: {x: 1.0, y: 1.0}",
-    "type": "type"
-  },
-
 UNHANDLED EXTEND doc.type -> "types" doc.type.function -> args -> name is an object
   {
     "defines": [

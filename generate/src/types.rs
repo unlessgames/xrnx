@@ -1,7 +1,5 @@
-use std::collections::HashMap;
-use std::fmt;
-
 use serde::{Deserialize, Serialize};
+use std::{collections::HashMap, fmt};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Eq, PartialOrd, Ord)]
 #[serde(rename_all = "lowercase")]
