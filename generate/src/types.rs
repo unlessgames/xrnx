@@ -98,7 +98,11 @@ impl Function {
     pub fn strip_base(&self) -> Self {
         if let Some(name) = self.name.clone() {
             Self {
-                name: Class::get_end(&name).map(|n| n.to_string()),
+                name: Some(
+                    Class::get_end(&name)
+                        .map(|n| n.to_string())
+                        .unwrap_or(self.name.clone().unwrap_or_default()),
+                ),
                 ..self.clone()
             }
         } else {
